@@ -1,0 +1,50 @@
+.topic-head h1 { font-size: 32px; margin: 8px 0 10px; }
+.topic-tagline { font-size: 15.5px; color: var(--text-dim); max-width: 620px; }
+.topic-prereqs { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+.topic-prereqs-label { font-size: 12px; color: var(--text-faint); font-family: var(--font-mono); }
+
+.topic-section { margin-top: 44px; padding-top: 4px; }
+.topic-section-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.topic-section-label::after { content: ''; flex: 1; height: 1px; background: var(--line-soft); }
+
+.flow-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.flow-list li { display: flex; gap: 12px; align-items: flex-start; }
+.flow-num {
+  flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%;
+  border: 1px solid var(--cyan-dim);
+  color: var(--cyan);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+}
+.flow-list li span:last-child { color: var(--text-dim); padding-top: 2px; }
+
+.complexity-row { display: flex; gap: 22px; flex-wrap: wrap; color: var(--text-dim); font-size: 14px; }
+.complexity-row > div { display: flex; align-items: center; gap: 8px; }
+
+.bullet-list { margin: 0; padding-left: 20px; color: var(--text-dim); display: flex; flex-direction: column; gap: 8px; }
+.bullet-list li::marker { color: var(--cyan); }
+.bullet-list.mistakes li::marker { color: var(--danger); }
+
+.related-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.mark-done {
+  margin-top: 50px;
+  padding: 12px 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-dim);
+  transition: border-color .15s ease, color .15s ease, background .15s ease;
+}
+.mark-done:hover { border-color: var(--cyan-dim); color: var(--cyan); }
+.mark-done.is-done { border-color: var(--cyan); color: var(--cyan); background: rgba(94,234,212,0.08); }

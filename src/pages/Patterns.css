@@ -1,0 +1,13 @@
+.patterns-page h1 { font-size: 32px; margin: 8px 0 4px; }
+.pattern-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 34px;
+}
+.pattern-card { padding: 20px; transition: border-color .15s ease; }
+.pattern-card:hover { border-color: var(--cyan-dim); }
+.pattern-card h3 { font-size: 16px; margin-bottom: 14px; color: var(--text); }
+.pattern-field { margin-bottom: 12px; }
+.pattern-field-label { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--amber); }
+.pattern-field p { margin-top: 4px; font-size: 13.5px; }

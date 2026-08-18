@@ -1,0 +1,19 @@
+.dtree-page h1 { font-size: 30px; margin: 8px 0 4px; max-width: 520px; }
+.dtree-breadcrumb { display: flex; gap: 8px; flex-wrap: wrap; margin: 24px 0 18px; }
+.dtree-breadcrumb .pill { cursor: pointer; }
+.dtree-breadcrumb .pill:hover { border-color: var(--cyan-dim); color: var(--cyan); }
+
+.dtree-panel { padding: 32px; min-height: 220px; }
+.dtree-question { font-size: 20px; margin-bottom: 20px; }
+.dtree-options { display: flex; flex-direction: column; gap: 10px; }
+.dtree-option {
+  text-align: left;
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 14.5px;
+  transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+.dtree-option:hover { border-color: var(--amber-dim); color: var(--amber); background: rgba(245,166,35,0.06); }
+.dtree-result h2 { font-size: 26px; margin-top: 6px; color: var(--cyan); }
