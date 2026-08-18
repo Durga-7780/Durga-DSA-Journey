@@ -5,10 +5,10 @@ import { ROADMAP, STAGES, byId } from '../data/roadmap.js';
 import useProgress from '../hooks/useProgress.js';
 import './Roadmap.css';
 
-const COL_W = 190;
-const ROW_H = 78;
-const CENTER_X = 340;
-const TOP_PAD = 40;
+const COL_W = 170;
+const ROW_H = 82;
+const CENTER_X = 420;
+const TOP_PAD = 48;
 
 export default function RoadmapPage() {
   const { isDone } = useProgress();
@@ -41,7 +41,7 @@ export default function RoadmapPage() {
       </div>
 
       <div className="roadmap-scroll">
-        <svg width={CENTER_X * 2} height={height} className="roadmap-svg">
+        <svg width={CENTER_X * 2 + COL_W} height={height} className="roadmap-svg">
           {ROADMAP.map((t) =>
             t.deps.map((depId) => {
               const a = pos[depId];
@@ -61,7 +61,7 @@ export default function RoadmapPage() {
           )}
         </svg>
 
-        <div className="roadmap-nodes" style={{ height }}>
+        <div className="roadmap-nodes" style={{ height, width: CENTER_X * 2 + COL_W }}>
           {ROADMAP.map((t) => {
             const p = pos[t.id];
             const stage = stageOf(t.stage);
