@@ -26,10 +26,18 @@ export const ROADMAP = [
   { id: 'sorting', title: 'Sorting', stage: 'patterns', col: 0, row: 6, ready: true, deps: ['searching'] },
 
   { id: 'linked-lists', title: 'Linked Lists', stage: 'linear', col: 0, row: 7, ready: true, deps: ['sorting'] },
+  { id: 'doubly-linked-list', title: 'Doubly Linked List', stage: 'linear', col: -1, row: 7, ready: true, deps: ['linked-lists'] },
+  { id: 'circular-linked-list', title: 'Circular Linked List', stage: 'linear', col: 1, row: 7, ready: true, deps: ['linked-lists'] },
+  { id: 'fast-and-slow', title: 'Fast & Slow Pointers', stage: 'patterns', col: 0, row: 7, ready: true, deps: ['linked-lists'] },
   { id: 'stack', title: 'Stack', stage: 'linear', col: -1, row: 8, ready: true, deps: ['linked-lists'] },
   { id: 'queue', title: 'Queue', stage: 'linear', col: 1, row: 8, ready: true, deps: ['linked-lists'] },
   { id: 'recursion', title: 'Recursion', stage: 'foundations', col: 0, row: 9, ready: true, deps: ['stack', 'queue'] },
   { id: 'backtracking', title: 'Backtracking', stage: 'advanced', col: 0, row: 10, ready: true, deps: ['recursion'] },
+
+  { id: 'insertion-sort', title: 'Insertion Sort', stage: 'patterns', col: -1, row: 6, ready: true, deps: ['searching'] },
+  { id: 'merge-sort', title: 'Merge Sort', stage: 'patterns', col: 1, row: 6, ready: true, deps: ['searching'] },
+  { id: 'heap-sort', title: 'Heap Sort', stage: 'patterns', col: 2, row: 6, ready: true, deps: ['searching'] },
+  { id: 'kadane', title: "Kadane's Algorithm", stage: 'patterns', col: 2, row: 4, ready: true, deps: ['arrays'] },
 
   { id: 'trees', title: 'Trees', stage: 'nonlinear', col: 0, row: 11, ready: true, deps: ['backtracking'] },
   { id: 'bst', title: 'Binary Search Tree', stage: 'nonlinear', col: -1, row: 12, ready: true, deps: ['trees'] },

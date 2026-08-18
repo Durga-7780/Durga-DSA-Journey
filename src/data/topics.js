@@ -1298,6 +1298,387 @@ uf.find(0) == uf.find(1)   # -> True, same component`,
     related: ['bst', 'graph-algorithms', 'heap'],
   },
 
+  'doubly-linked-list': {
+    difficulty: 'Beginner',
+    tagline: 'Every node holds two pointers — traverse in both directions.',
+    whatIsIt:
+      'A doubly linked list extends the singly linked list by adding a prev pointer to each node, allowing traversal in both directions. Each node knows its predecessor and successor.',
+    whyNeeded:
+      'The extra prev pointer enables O(1) deletion when you have a reference to the node (no need to find the predecessor), and is the foundation for data structures like the browser history stack and LRU cache.',
+    howItWorks: [
+      'Each node stores: value, next (points forward), prev (points backward).',
+      'The head node has prev = None; the tail node has next = None.',
+      'Insertion in the middle: update 4 pointers — 2 on the new node and 2 on the neighbors.',
+      'Deletion: relink prev and next of the surrounding nodes — no traversal needed if you have the node reference.',
+    ],
+    viz: 'DoublyLinkedList',
+    pythonCode: `class Node:
+    def __init__(self, val):
+        self.val = val
+        self.next = None
+        self.prev = None
+
+class DoublyLinkedList:
+    def __init__(self):
+        # Dummy sentinels — no edge-case handling for head/tail
+        self.head = Node(0)
+        self.tail = Node(0)
+        self.head.next = self.tail
+        self.tail.prev = self.head
+
+    def insert_before(self, node, val):
+        """Insert new node just before 'node' — O(1)"""
+        new = Node(val)
+        prev = node.prev
+        prev.next = new
+        new.prev = prev
+        new.next = node
+        node.prev = new
+
+    def delete(self, node):
+        """Remove 'node' from the list — O(1)"""
+        node.prev.next = node.next
+        node.next.prev = node.prev`,
+    complexity: { time: 'Access O(n) · Insert/Delete at known node O(1)', space: 'O(n)' },
+    whenToUse: [
+      'LRU Cache — you need O(1) move-to-front and O(1) eviction.',
+      'Text editors / browser history — forward and backward navigation.',
+      'Any deque-like structure that needs O(1) push/pop at both ends.',
+    ],
+    interviewTips: [
+      'Use dummy head and tail sentinel nodes — they eliminate all null-pointer edge cases for insertion and deletion.',
+      'Draw out the 4-pointer re-link on a whiteboard before coding any insert/delete.',
+    ],
+    commonMistakes: [
+      'Updating only 3 of the 4 required pointers in an insert, leaving the list corrupted.',
+      'Forgetting to update both next and prev when deleting a node.',
+    ],
+    related: ['linked-lists', 'circular-linked-list', 'fast-and-slow'],
+  },
+
+  'circular-linked-list': {
+    difficulty: 'Beginner',
+    tagline: 'The tail points back to the head — there is no NULL terminator.',
+    whatIsIt:
+      'A circular linked list is a linked list where the last node\'s next pointer points back to the first node (head) instead of None. The list forms a continuous loop.',
+    whyNeeded:
+      'Circular lists are ideal for round-robin scheduling, circular buffers, and any problem that needs wraparound behavior. They also naturally model cyclic structures like game turns.',
+    howItWorks: [
+      'Traverse starting from any node: stop when you return to the starting node.',
+      'There is no NULL — detecting end-of-list requires checking if next === head.',
+      'Insertion: same as singly linked, but ensure the tail\'s next always points to head.',
+      'Cycle detection: Fast & Slow pointer approach works here too (next topic!).',
+    ],
+    viz: 'CircularLinkedList',
+    pythonCode: `class Node:
+    def __init__(self, val, nxt=None):
+        self.val = val
+        self.next = nxt
+
+def build_circular(values):
+    if not values:
+        return None
+    head = Node(values[0])
+    curr = head
+    for v in values[1:]:
+        curr.next = Node(v)
+        curr = curr.next
+    curr.next = head   # tail → head (closes the circle)
+    return head
+
+def traverse(head):
+    if not head:
+        return []
+    result = []
+    curr = head
+    while True:
+        result.append(curr.val)
+        curr = curr.next
+        if curr is head:   # back at start
+            break
+    return result`,
+    complexity: { time: 'Traversal O(n) · Insert O(1) at known position', space: 'O(n)' },
+    whenToUse: [
+      'Round-robin schedulers — CPU time slicing cycles continuously through processes.',
+      'Circular buffers / ring buffers for data streams.',
+      'Multiplayer game turns — after the last player it wraps back to the first.',
+    ],
+    interviewTips: [
+      'The termination condition in a loop is `curr.next === head`, NOT `curr.next === None` — this is the most common bug.',
+      'Cicular lists are the input structure in many "detect a cycle" problems — know Floyd\'s algorithm (fast & slow).',
+    ],
+    commonMistakes: [
+      'Using None as the stop condition, causing an infinite loop.',
+      'Forgetting to re-link the tail → head pointer after every insertion or deletion.',
+    ],
+    related: ['linked-lists', 'doubly-linked-list', 'fast-and-slow'],
+  },
+
+  'fast-and-slow': {
+    difficulty: 'Beginner',
+    tagline: "Floyd's tortoise and hare — two pointers at different speeds detect cycles in O(1) space.",
+    whatIsIt:
+      'The fast & slow pointer technique uses two pointers that advance at different speeds (slow moves 1 step, fast moves 2). If a cycle exists, fast will eventually lap slow and they meet inside the cycle. If there\'s no cycle, fast reaches the end.',
+    whyNeeded:
+      'This technique detects cycles, finds list midpoints, and locates the k-th node from the end — all in O(n) time and O(1) extra space, no hash set required.',
+    howItWorks: [
+      'Start both slow and fast at head.',
+      'Each step: slow = slow.next, fast = fast.next.next.',
+      'If fast or fast.next is None — no cycle, fast reached the tail.',
+      'If slow === fast — they\'ve met inside the cycle. Cycle exists.',
+      'To find cycle entry: reset one pointer to head, advance both one step at a time — they meet at the entry node.',
+    ],
+    viz: 'FastAndSlow',
+    pythonCode: `def has_cycle(head):
+    slow = fast = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        if slow is fast:
+            return True    # cycle detected
+    return False
+
+def cycle_entry(head):
+    """Find the node where the cycle begins — O(n), O(1) space."""
+    slow = fast = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        if slow is fast:
+            break
+    else:
+        return None   # no cycle
+    slow = head
+    while slow is not fast:
+        slow = slow.next
+        fast = fast.next
+    return slow  # cycle entry node
+
+def find_middle(head):
+    """Returns the middle node — fast & slow without cycle check."""
+    slow = fast = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+    return slow`,
+    complexity: { time: 'O(n)', space: 'O(1)' },
+    whenToUse: [
+      'Detect if a linked list has a cycle.',
+      'Find the middle node of a linked list in one pass.',
+      'Find the kth node from the end (use two pointers k apart).',
+      'Detect duplicate numbers in an array treated as a linked list (Leetcode 287).',
+    ],
+    interviewTips: [
+      'Whenever a linked list problem says O(1) space and O(n) time, think fast & slow.',
+      '"Find the middle" is a two-line change on the cycle detection template — know both patterns from one algorithm.',
+    ],
+    commonMistakes: [
+      'Checking fast === null without also checking fast.next — fast.next.next causes a null pointer exception.',
+      'Moving both pointers by 1 (slow) and 1 (fast) instead of 1 and 2.',
+    ],
+    related: ['linked-lists', 'circular-linked-list', 'two-pointers'],
+  },
+
+  'insertion-sort': {
+    difficulty: 'Beginner',
+    tagline: 'Build the sorted section one element at a time — like sorting a hand of cards.',
+    whatIsIt:
+      'Insertion sort maintains a sorted prefix. For each new element (the "key"), it shifts all larger sorted elements one position right, then places the key in its correct spot.',
+    whyNeeded:
+      'Insertion sort is adaptive — it runs in O(n) on nearly-sorted data, making it the default choice for small arrays and the finishing step in Timsort (Python\'s built-in sort).',
+    howItWorks: [
+      'Outer loop: i from 1 to n-1. Element at i is the current "key".',
+      'Inner loop: j from i-1 down to 0, while arr[j] > key.',
+      'Shift arr[j] right to arr[j+1] in each inner step.',
+      'Place the key at arr[j+1] when the inner loop ends.',
+    ],
+    viz: 'InsertionSort',
+    pythonCode: `def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        # Shift elements greater than key one position right
+        while j >= 0 and arr[j] > key:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key   # place key in its correct position
+    return arr
+
+# For nearly-sorted data:
+# arr = [1, 2, 4, 3, 5]  →  only 1 shift needed — effectively O(n)`,
+    complexity: { time: 'O(n²) worst · O(n) best (sorted input)', space: 'O(1) in-place' },
+    whenToUse: [
+      'Small arrays (n < 20) — the constant factor beats merge/quick sort.',
+      'Input is nearly sorted — insertion sort\'s O(n) best case shines here.',
+      'Online sorting — you can insert elements as they arrive, one at a time.',
+    ],
+    interviewTips: [
+      'Can you spot when a problem gives you a sorted (or nearly-sorted) input? That\'s an insertion sort hint.',
+      'Insertion sort is stable — equal elements keep their original order, useful for multi-key sorting.',
+    ],
+    commonMistakes: [
+      'Doing a swap instead of a shift — swaps need 3 operations per step; a shift is 1.',
+      'Forgetting that the inner loop condition must check j >= 0 to avoid out-of-bounds.',
+    ],
+    related: ['sorting', 'merge-sort', 'heap-sort'],
+  },
+
+  'merge-sort': {
+    difficulty: 'Intermediate',
+    tagline: 'Divide and conquer — split in half, sort each half, merge them back.',
+    whatIsIt:
+      'Merge sort is a stable, divide-and-conquer sorting algorithm. It splits the array into halves recursively until each sub-array has 1 element (trivially sorted), then repeatedly merges adjacent sorted halves.',
+    whyNeeded:
+      'Merge sort guarantees O(n log n) in all cases — no bad inputs like quicksort has. It\'s the sorting engine behind Python\'s Timsort and is the go-to when stability and worst-case guarantees matter.',
+    howItWorks: [
+      'Base case: array of size ≤ 1 is already sorted.',
+      'Divide: split at mid = n/2 into left and right halves.',
+      'Conquer: recursively merge-sort each half.',
+      'Merge: use two pointers (l, r) on sorted halves, always picking the smaller front element into the result.',
+    ],
+    viz: 'MergeSort',
+    pythonCode: `def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    mid = len(arr) // 2
+    left = merge_sort(arr[:mid])
+    right = merge_sort(arr[mid:])
+    return merge(left, right)
+
+def merge(left, right):
+    result = []
+    l, r = 0, 0
+    while l < len(left) and r < len(right):
+        if left[l] <= right[r]:      # stable: equal prefers left
+            result.append(left[l]); l += 1
+        else:
+            result.append(right[r]); r += 1
+    result.extend(left[l:])
+    result.extend(right[r:])
+    return result
+
+# Count inversions: count each time right[r] is preferred — O(n log n)`,
+    complexity: { time: 'O(n log n) — always', space: 'O(n) auxiliary (merge buffer)' },
+    whenToUse: [
+      'Stability is required (equal elements must preserve original order).',
+      'Worst-case O(n log n) is mandatory — can\'t risk quicksort\'s O(n²).',
+      'Sorting linked lists — merge sort is O(1) extra space on linked lists.',
+    ],
+    interviewTips: [
+      '"Count inversions in an array" is a classic interview problem — it\'s solved by augmenting the merge step.',
+      'External sort (data too large for RAM) always uses merge sort because disk reads suit sequential access.',
+    ],
+    commonMistakes: [
+      'Using `<=` in the merge step is important for stability — if you use `<`, equal elements swap order.',
+      'Allocating a new array in each merge call — use an index-based in-place merge to reduce allocations.',
+    ],
+    related: ['sorting', 'insertion-sort', 'heap-sort', 'recursion'],
+  },
+
+  'heap-sort': {
+    difficulty: 'Intermediate',
+    tagline: 'Build a max-heap, then repeatedly extract the max to sort in place.',
+    whatIsIt:
+      'Heap sort uses the heap data structure to sort. Phase 1: build a max-heap from the array (all parent ≥ children). Phase 2: repeatedly swap the root (max) with the last element and heapify to restore the property.',
+    whyNeeded:
+      'Heap sort achieves O(n log n) in all cases with O(1) extra space — no recursion stack, no auxiliary array. It\'s the only comparison sort with both guarantees simultaneously.',
+    howItWorks: [
+      'Build max-heap: call heapify on all non-leaf nodes from bottom-up — O(n) total.',
+      'The root arr[0] is now the maximum.',
+      'Swap arr[0] with arr[n-1]. Reduce heap size by 1. Heapify the root.',
+      'Repeat until heap size is 1 — the array is sorted in ascending order.',
+    ],
+    viz: 'HeapSort',
+    pythonCode: `def heapify(arr, n, i):
+    largest = i
+    l, r = 2 * i + 1, 2 * i + 2
+    if l < n and arr[l] > arr[largest]:
+        largest = l
+    if r < n and arr[r] > arr[largest]:
+        largest = r
+    if largest != i:
+        arr[i], arr[largest] = arr[largest], arr[i]
+        heapify(arr, n, largest)
+
+def heap_sort(arr):
+    n = len(arr)
+    # Phase 1: build max-heap O(n)
+    for i in range(n // 2 - 1, -1, -1):
+        heapify(arr, n, i)
+    # Phase 2: extract max one by one O(n log n)
+    for i in range(n - 1, 0, -1):
+        arr[0], arr[i] = arr[i], arr[0]   # move max to end
+        heapify(arr, i, 0)                  # restore heap on smaller range
+    return arr`,
+    complexity: { time: 'O(n log n) — always', space: 'O(1) in-place (O(log n) for recursion)' },
+    whenToUse: [
+      'You need in-place O(n log n) sorting with no extra memory.',
+      'Embedded systems or memory-constrained environments.',
+      'Building a priority queue from scratch — Phase 1 (build-heap) is O(n).',
+    ],
+    interviewTips: [
+      'Heap sort is rarely asked to implement fully — but "build a heap in O(n)" and "k largest elements" using a heap appear constantly.',
+      'Python\'s `heapq` is a min-heap. Use negative values or a custom comparator to get max-heap behavior.',
+    ],
+    commonMistakes: [
+      'Starting heapify from the wrong index — start from n//2 - 1 (last non-leaf), not n-1.',
+      'Forgetting to reduce the heap size n in Phase 2 — heapifying the sorted tail corrupts the result.',
+    ],
+    related: ['sorting', 'insertion-sort', 'merge-sort', 'heap'],
+  },
+
+  kadane: {
+    difficulty: 'Intermediate',
+    tagline: 'Maximum subarray sum in O(n) — extend or restart the current window.',
+    whatIsIt:
+      'Kadane\'s algorithm finds the contiguous subarray with the largest sum in O(n) time. At each index it makes a greedy choice: extend the current subarray or start fresh from this element.',
+    whyNeeded:
+      'The brute-force O(n²) approach checks every subarray. Kadane\'s insight — "if the running sum becomes negative, discard it and start over" — collapses it to one pass, making it one of the most elegant O(n) algorithms in CS.',
+    howItWorks: [
+      'Initialize curSum = arr[0], maxSum = arr[0].',
+      'For each element from index 1 onward: curSum = max(arr[i], curSum + arr[i]).',
+      'If curSum + arr[i] < arr[i], starting fresh is better — reset curStart.',
+      'Update maxSum = max(maxSum, curSum) after each step.',
+      'Return maxSum (and optionally the window indices bestStart..bestEnd).',
+    ],
+    viz: 'Kadane',
+    pythonCode: `def kadane(arr):
+    """Returns (max_sum, start, end) indexes of the best subarray."""
+    max_sum = cur_sum = arr[0]
+    best_start = best_end = cur_start = 0
+
+    for i in range(1, len(arr)):
+        if arr[i] > cur_sum + arr[i]:   # start fresh
+            cur_sum = arr[i]
+            cur_start = i
+        else:                             # extend window
+            cur_sum += arr[i]
+
+        if cur_sum > max_sum:
+            max_sum = cur_sum
+            best_start, best_end = cur_start, i
+
+    return max_sum, best_start, best_end
+
+# Example: [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+# → maxSum = 6, subarray = [4, -1, 2, 1] (indices 3..6)`,
+    complexity: { time: 'O(n)', space: 'O(1)' },
+    whenToUse: [
+      '"Maximum subarray sum" or "largest contiguous sum" — textbook Kadane\'s.',
+      'Can extend to 2D ("maximum subarray in a matrix") by fixing column bounds and applying Kadane row-wise.',
+      '"Maximum circular subarray sum" — run Kadane on the normal array AND on its negated version, take the max.',
+    ],
+    interviewTips: [
+      'Always track curStart and bestStart/bestEnd so you can report the actual subarray, not just the sum.',
+      'If all elements are negative, Kadane returns the least-negative element — confirm this edge case with the interviewer.',
+    ],
+    commonMistakes: [
+      'Initializing curSum and maxSum to 0 instead of arr[0] — breaks when all elements are negative.',
+      'Confusing "maximum subarray sum" (Kadane\'s) with "maximum subarray product" (different recurrence).',
+    ],
+    related: ['arrays', 'dp', 'sliding-window'],
+  },
+
 };
 
 export default topics;

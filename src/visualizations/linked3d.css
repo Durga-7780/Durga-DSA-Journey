@@ -1,0 +1,151 @@
+/* ===== 3D-style Linked List Visualizations ===== */
+
+/* Doubly Linked List */
+.dll-direction-badge {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+.dir-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 3px 12px;
+  border-radius: 999px;
+  border: 1.5px solid var(--cyan);
+  color: var(--cyan);
+  transition: all 0.3s;
+}
+.dir-badge.bwd { border-color: var(--amber); color: var(--amber); }
+.dir-badge.done { border-color: var(--violet); color: var(--violet); }
+
+.dll-track {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 8px 4px 4px;
+}
+.dll-node-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.dll-node {
+  display: flex;
+  align-items: stretch;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg-raised);
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(20,30,50,0.08),
+              0 1px 0 rgba(255,255,255,0.5) inset;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+.dll-node::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+  border-radius: inherit;
+  pointer-events: none;
+}
+.dll-node.active {
+  border-color: var(--amber);
+  box-shadow: 0 0 18px rgba(245,166,35,0.35), 0 4px 12px rgba(20,30,50,0.12);
+}
+.dll-node.visited {
+  border-color: var(--cyan-dim);
+  background: rgba(94,234,212,0.06);
+}
+.dll-node-prev, .dll-node-next {
+  background: rgba(20,30,50,0.055);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: var(--text-faint);
+  writing-mode: vertical-rl;
+  padding: 6px 3px;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+}
+.dll-node-val {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--text);
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+}
+.dll-node.active .dll-node-val { color: var(--amber); }
+.dll-node.visited .dll-node-val { color: var(--cyan); }
+
+.dll-arrows-between {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 0 2px;
+}
+.dll-fwd-arr, .dll-bwd-arr {
+  font-size: 14px;
+  color: var(--line);
+  transition: color 0.3s;
+  line-height: 1;
+}
+.dll-fwd-arr.lit { color: var(--cyan); }
+.dll-bwd-arr.lit { color: var(--amber); }
+
+.dll-arrow {
+  font-size: 14px;
+  color: var(--line);
+  padding: 0 4px;
+}
+.dll-null {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  padding: 4px 8px;
+  border: 1px dashed var(--line);
+  border-radius: 5px;
+}
+.dll-ptr-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 6px;
+}
+.dll-head-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--cyan);
+  font-weight: 700;
+}
+.dll-tail-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--amber);
+  font-weight: 700;
+}
+.dll-ptr-label {
+  min-width: 50px;
+  display: flex;
+  justify-content: center;
+}
+
+/* shared badge row */
+.vis-badge-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
