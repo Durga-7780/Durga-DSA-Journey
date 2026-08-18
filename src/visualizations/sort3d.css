@@ -1,0 +1,185 @@
+/* ===== 3D-style Sort Bar Visualizations ===== */
+
+.sort3d-bars-wrap {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 180px;
+    padding: 0 8px;
+    justify-content: center;
+}
+
+.sort3d-bar {
+    position: relative;
+    width: 38px;
+    min-width: 38px;
+    border-radius: 6px 6px 3px 3px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 5px;
+    background: linear-gradient(160deg,
+            rgba(255, 255, 255, 0.18) 0%,
+            rgba(20, 30, 50, 0.04) 40%,
+            rgba(20, 30, 50, 0.12) 100%);
+    border: 1.5px solid var(--line);
+    border-bottom: 3px solid rgba(20, 30, 50, 0.15);
+    box-shadow:
+        0 4px 10px rgba(20, 30, 50, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, transform 0.18s;
+    transform-origin: bottom center;
+}
+
+/* 3D depth effect with pseudo-element */
+.sort3d-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(105deg, rgba(255, 255, 255, 0.22) 0%, transparent 55%);
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+.sort3d-bar::after {
+    content: '';
+    position: absolute;
+    right: -5px;
+    top: 4px;
+    bottom: -4px;
+    width: 5px;
+    background: rgba(20, 30, 50, 0.1);
+    border-radius: 0 3px 3px 0;
+    border-top: 1.5px solid rgba(20, 30, 50, 0.08);
+    border-right: 1.5px solid rgba(20, 30, 50, 0.1);
+    clip-path: polygon(0 0, 100% 20%, 100% 100%, 0% 100%);
+}
+
+.sort3d-bar.key {
+    border-color: var(--amber);
+    background: linear-gradient(160deg,
+            rgba(245, 166, 35, 0.22) 0%,
+            rgba(245, 166, 35, 0.08) 100%);
+    transform: translateY(-6px) scale(1.04);
+    box-shadow: 0 0 18px rgba(245, 166, 35, 0.35), 0 6px 16px rgba(20, 30, 50, 0.12);
+    z-index: 5;
+}
+
+.sort3d-bar.compare {
+    border-color: var(--cyan);
+    background: linear-gradient(160deg,
+            rgba(94, 234, 212, 0.22) 0%,
+            rgba(94, 234, 212, 0.06) 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 0 12px rgba(94, 234, 212, 0.3), 0 4px 10px rgba(20, 30, 50, 0.1);
+}
+
+.sort3d-bar.sorted {
+    border-color: var(--violet);
+    background: linear-gradient(160deg,
+            rgba(124, 92, 209, 0.18) 0%,
+            rgba(124, 92, 209, 0.05) 100%);
+    box-shadow: 0 0 10px rgba(124, 92, 209, 0.22);
+}
+
+.sort3d-bar.out-heap {
+    opacity: 0.35;
+    border-style: dashed;
+    transform: none;
+}
+
+.sort3d-val {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 11px;
+    color: var(--text-dim);
+    z-index: 2;
+    position: relative;
+}
+
+.sort3d-bar.key .sort3d-val {
+    color: var(--amber);
+}
+
+.sort3d-bar.compare .sort3d-val {
+    color: var(--cyan);
+}
+
+.sort3d-bar.sorted .sort3d-val {
+    color: var(--violet);
+}
+
+.sort3d-badge {
+    position: absolute;
+    top: -22px;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+    z-index: 10;
+    white-space: nowrap;
+}
+
+.key-badge {
+    background: rgba(245, 166, 35, 0.2);
+    color: var(--amber);
+    border: 1px solid var(--amber);
+}
+
+.cmp-badge {
+    background: rgba(94, 234, 212, 0.15);
+    color: var(--cyan);
+    border: 1px solid var(--cyan);
+}
+
+.sorted-badge {
+    background: rgba(124, 92, 209, 0.15);
+    color: var(--violet);
+    border: 1px solid var(--violet);
+}
+
+/* legend icons */
+.sort3d-legend-key {
+    background: var(--amber);
+    border-radius: 3px;
+}
+
+.sort3d-legend-cmp {
+    background: var(--cyan);
+    border-radius: 3px;
+}
+
+.sort3d-legend-sorted {
+    background: var(--violet);
+    border-radius: 3px;
+}
+
+/* heap sort specific */
+.heap-info-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 4px;
+}
+
+/* Kadane score cards */
+.kadane-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 8px 18px;
+    border: 2px solid;
+    border-radius: var(--radius-sm);
+    background: var(--bg-raised);
+    box-shadow: 0 4px 12px rgba(20, 30, 50, 0.08);
+    min-width: 80px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
